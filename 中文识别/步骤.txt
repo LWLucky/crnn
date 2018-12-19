@@ -1,0 +1,99 @@
+环境：
+
+1.anaconda3(后续步骤全在anaconda容器中安装，2-7不用管顺序)
+
+2.opencv 2或3 
+
+3.pytorch （conda install pytorch）
+
+4.python 2.7（ubantu16.04自带）安装numpy等各种依赖，运行时会提示缺少的依赖
+
+5.安装lmdb （pip install lmdb）
+
+6.安装warp-ctc  https://github.com/SeanNaren/warp-ctc/tree/pytorch_bindings/pytorch_binding
+
+7.安装cuda8.0 cudnn（可以不使用GPU运行）
+
+可能有遗忘的
+
+文件结构：
+
+100中文识别：.pth文件为生成的模型文件（测试准确率99%+），charsets为对应的100个中文字符
+
+pytorch：
+
+       data: 存放训练和验证数据（train.mdb和val.mdb,自己生成的，可以修改存放路径）
+
+       models：存放的神经网络代码
+
+       test：测试utils
+
+       tool：转换torch模型文件为pytorch模型文件
+       
+       create_dataset.py(生成训练和验证数据)
+       
+       crnn_main.py (训练模型，输入参数可以修改，直接使用命令python crnn_mian.py --cuda(用cpu就不加) --adadelta)
+       
+       dataset.py（生成数据）
+      
+       demo.py (测试模型)
+  
+       keys.py (字典文件，与charset.txt内容对应)
+
+       u1.py（生成img.txt label.txt,用于生成数据集）
+
+datasetbuilder（样本生成工具）：
+                charsets：字符集
+           
+                fonts：字体
+ 
+                images：（如果该文件存在，程序会直接继续添加文件，不会覆盖）
+ 
+                imgsBuilder5.py：（生成样本代码，里面可以修改生成图片数量，目前是6400张，100个当前字典中的字符）
+              
+训练步骤：
+
+1.生成训练样本
+  进入datasetbuilder目录
+
+  运行imgsBuilder.py -->当前目录生成images文件夹
+
+  进入pytorch目录
+
+  运行u1.py -->当前目录生成img.txt  label.txt 
+
+  运行create_dataset.py -->在data文件中生成train文件
+
+2.生成验证样本
+
+  修改imgsBuilder.py修改参数
+  
+  删除images文件夹
+
+  运行imgsBuilder.py -->再次生成images文件夹
+
+  进入pytorch目录
+
+  运行u1.py -->当前目录生成img.txt  label.txt 
+
+  修改create_dataset.py生成样本的存储路径为 ./data/val
+
+  运行create_dataset.py -->在data文件中生成train文件
+
+3.训练模型
+
+  运行crnn_main.py
+  
+  模型会保存在expr文件夹中，最后生成的模型是效果最好的
+
+4.验证模型
+  修改demo.py中对应的路径信息
+  
+  运行demo.py
+
+  
+报错时，应该是环境或文件存放路径问题
+
+  
+
+
